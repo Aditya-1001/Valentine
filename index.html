@@ -4,137 +4,126 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Important Question ❤️</title>
+
 <style>
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   background: linear-gradient(135deg, #ff4e8d, #ff9ecb);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  color: white;
+  min-height: 100dvh; /* modern mobile-safe height */
+  padding: 20px;
   text-align: center;
+  color: white;
 }
 
 .container {
+  width: 100%;
+  max-width: 400px;
   background: rgba(0,0,0,0.2);
-  padding: 40px;
+  padding: 30px 20px;
   border-radius: 20px;
-  width: 90%;
-  max-width: 500px;
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+p {
+  font-size: 16px;
+  margin-bottom: 20px;
 }
 
 button {
-  margin: 15px;
-  padding: 12px 25px;
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
   font-size: 18px;
   border: none;
-  border-radius: 30px;
+  border-radius: 40px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .yes {
-  background-color: #ffffff;
+  background: white;
   color: #ff4e8d;
+  font-weight: bold;
 }
 
 .no {
-  background-color: #ff2e63;
+  background: #ff2e63;
   color: white;
-}
-
-button:hover {
-  transform: scale(1.1);
 }
 
 .hidden {
   display: none;
+}
+
+/* 🎉 Confetti */
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  animation: fall linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110dvh) rotate(720deg);
+  }
 }
 </style>
 </head>
 <body>
 
 <div class="container" id="question">
-  <h1>Will You Be My Valentine, Mizu? 💖</h1>
-  <p>This is an official application for the position of My Valentine 2026.</p>
+  <h1>Will You Be My Valentine? 💖</h1>
+  <p>This is a very serious and official application.</p>
   <button class="yes" onclick="sayYes()">Yes 💘</button>
-  <button class="no" onclick="moveNo(this)">No 😢</button>
+  <button class="no" onclick="sayNo()">No 😢</button>
 </div>
 
 <div class="container hidden" id="response">
-  <h1>YAYYY!!! 🎉</h1>
+  <h1>YAY!!! 🎉</h1>
   <p>You just made me the happiest person alive.</p>
-  <p>I can't wait to make this Valentine's Day special for you ❤️</p>
+  <p>I can't wait to make this day special for you ❤️</p>
 </div>
 
 <script>
 function sayYes() {
   document.getElementById("question").classList.add("hidden");
   document.getElementById("response").classList.remove("hidden");
-  startConfetti();
+  launchConfetti();
 }
 
-function moveNo(button) {
-  button.style.position = "absolute";
-  button.style.top = Math.random() * (window.innerHeight - 50) + "px";
-  button.style.left = Math.random() * (window.innerWidth - 100) + "px";
+function sayNo() {
+  alert("Hmm... try that again 😌");
 }
 
-// 🎉 Mobile-Optimized Canvas Confetti
-function startConfetti() {
-  const canvas = document.createElement("canvas");
-  document.body.appendChild(canvas);
-  const ctx = canvas.getContext("2d");
+function launchConfetti() {
+  const colors = ["#ff4e8d","#ffffff","#ffd700","#ff2e63","#00f5d4"];
 
-  canvas.style.position = "fixed";
-  canvas.style.top = "0";
-  canvas.style.left = "0";
-  canvas.style.width = "100%";
-  canvas.style.height = "100%";
-  canvas.style.pointerEvents = "none";
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  for (let i = 0; i < 80; i++) {
+    const confetti = document.createElement("div");
+    confetti.classList.add("confetti");
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDuration = (Math.random() * 2 + 2) + "s";
 
-  const pieces = [];
-  const colors = ["#ff4e8d", "#ffffff", "#ffd700", "#ff2e63", "#00f5d4"];
+    document.body.appendChild(confetti);
 
-  for (let i = 0; i < 120; i++) {
-    pieces.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height - canvas.height,
-      size: Math.random() * 8 + 4,
-      speed: Math.random() * 3 + 2,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      rotation: Math.random() * 360
-    });
+    setTimeout(() => {
+      confetti.remove();
+    }, 4000);
   }
-
-  function update() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    pieces.forEach(p => {
-      p.y += p.speed;
-      p.rotation += 5;
-
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rotation * Math.PI / 180);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-      ctx.restore();
-    });
-
-    requestAnimationFrame(update);
-  }
-
-  update();
-
-  // Stop after 4 seconds
-  setTimeout(() => {
-    canvas.remove();
-  }, 4000);
 }
 </script>
 
