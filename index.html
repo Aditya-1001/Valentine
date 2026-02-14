@@ -73,42 +73,68 @@ button:hover {
 function sayYes() {
   document.getElementById("question").classList.add("hidden");
   document.getElementById("response").classList.remove("hidden");
-  launchConfetti();
+  startConfetti();
 }
 
 function moveNo(button) {
   button.style.position = "absolute";
-  button.style.top = Math.random() * window.innerHeight + "px";
-  button.style.left = Math.random() * window.innerWidth + "px";
+  button.style.top = Math.random() * (window.innerHeight - 50) + "px";
+  button.style.left = Math.random() * (window.innerWidth - 100) + "px";
 }
 
-// 🎉 Real Confetti Generator
-function launchConfetti() {
+// 🎉 Mobile-Optimized Canvas Confetti
+function startConfetti() {
+  const canvas = document.createElement("canvas");
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext("2d");
+
+  canvas.style.position = "fixed";
+  canvas.style.top = "0";
+  canvas.style.left = "0";
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
+  canvas.style.pointerEvents = "none";
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const pieces = [];
   const colors = ["#ff4e8d", "#ffffff", "#ffd700", "#ff2e63", "#00f5d4"];
 
-  for (let i = 0; i < 150; i++) {
-    const confetti = document.createElement("div");
-    confetti.style.position = "fixed";
-    confetti.style.width = "8px";
-    confetti.style.height = "8px";
-    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-    confetti.style.left = Math.random() * window.innerWidth + "px";
-    confetti.style.top = "-10px";
-    confetti.style.opacity = Math.random();
-    confetti.style.transform = "rotate(" + Math.random() * 360 + "deg)";
-    confetti.style.transition = "top 3s linear, transform 3s linear";
-
-    document.body.appendChild(confetti);
-
-    setTimeout(() => {
-      confetti.style.top = window.innerHeight + "px";
-      confetti.style.transform = "rotate(" + Math.random() * 720 + "deg)";
-    }, 10);
-
-    setTimeout(() => {
-      confetti.remove();
-    }, 3000);
+  for (let i = 0; i < 120; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      size: Math.random() * 8 + 4,
+      speed: Math.random() * 3 + 2,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rotation: Math.random() * 360
+    });
   }
+
+  function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    pieces.forEach(p => {
+      p.y += p.speed;
+      p.rotation += 5;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+      ctx.restore();
+    });
+
+    requestAnimationFrame(update);
+  }
+
+  update();
+
+  // Stop after 4 seconds
+  setTimeout(() => {
+    canvas.remove();
+  }, 4000);
 }
 </script>
 
