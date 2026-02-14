@@ -69,10 +69,35 @@ button:hover {
   <p>I can't wait to make this Valentine's Day special for you ❤️</p>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 <script>
 function sayYes() {
   document.getElementById("question").classList.add("hidden");
   document.getElementById("response").classList.remove("hidden");
+
+  // 🎉 Confetti burst
+  confetti({
+    particleCount: 200,
+    spread: 120,
+    origin: { y: 0.6 }
+  });
+
+  // Extra side bursts for dramatic effect
+  setTimeout(() => {
+    confetti({
+      particleCount: 100,
+      angle: 60,
+      spread: 70,
+      origin: { x: 0 }
+    });
+    confetti({
+      particleCount: 100,
+      angle: 120,
+      spread: 70,
+      origin: { x: 1 }
+    });
+  }, 300);
 }
 
 function moveNo(button) {
